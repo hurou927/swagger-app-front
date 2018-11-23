@@ -20,6 +20,12 @@ import List from '@material-ui/core/List';
 import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 
+import SwaggerUI from './swagger-view';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -38,7 +44,11 @@ const styles = theme => ({
     },
     chip : {
         
-    }
+    },
+    formControl: {
+        margin: theme.spacing.unit,
+        minWidth: 120,
+    },
 });
 class ButtonAppBar extends Component {
 // function ButtonAppBar(props) {
@@ -46,9 +56,11 @@ class ButtonAppBar extends Component {
         super(props);
         this.state={
             isOpenSideBar: false,
-            serviceList: []
+            serviceList: [],
+            selectedService: undefined
         };
         this.toggleSideBar = this.toggleSideBar.bind(this);
+        this.ComponentVersionSelect = this.TitleBar.bind(this);
     }
 
     toggleSideBar(nextStatus) {
@@ -61,9 +73,19 @@ class ButtonAppBar extends Component {
         this.setState({ serviceList: this.allServiceList});
     }
 
+    TitleBar(classes){
+
+        if (!this.state.selectedService) {
+            return (<div>HUwagger</div>)
+        } else{
+            return ( <div>{`HUwagger / ${this.state.selectedService.name}`}</div> );
+        }
+    }
+
+
     render(){
         const { classes } = this.props;
-
+        console.log(this.state.age)
         const sideList = (
             <div className={classes.list}>
                 <List>
@@ -80,7 +102,10 @@ class ButtonAppBar extends Component {
                     {this.state.serviceList.map((service, index) => (
                         <ListItem
                             button key={service.name}
-                            onClick={e => { this.props.onSelected(service) }}
+                            onClick={e => { 
+                                this.props.onSelected(service); 
+                                this.setState({selectedService:service});
+                            }}
                         >
                             <ListItemText primary={service.name} />
                             <Chip label={`${service.latestVersion}`} className={classes.chip} style={{ fontSize: '10px' }}  />
@@ -90,6 +115,7 @@ class ButtonAppBar extends Component {
             </div>
         );
 
+        
 
 
         return (
@@ -102,10 +128,12 @@ class ButtonAppBar extends Component {
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" color="inherit" className={classes.grow}>
-                            HUwagger
+                            {this.TitleBar(classes)}
                         </Typography>
                     </Toolbar>
                 </AppBar>
+
+
 
                 {/* Left Side Drawer */}
                 <Drawer open={this.state.isOpenSideBar} onClose={e =>  this.toggleSideBar(false)}>
@@ -115,9 +143,32 @@ class ButtonAppBar extends Component {
                         // onClick={e => this.toggleSideBar(false)}
                         // onKeyDown={e => this.toggleSideBar(false)}
                     >
+
                         {sideList}
                     </div>
                 </Drawer>
+
+                <div style={{ margin: 24} }>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="age-simple">Version</InputLabel>
+                        <Select
+                            style={{ color: '' }}
+                            value={this.state.selectedServiceVersion}
+                            onChange={e => this.setState({ selectedServiceVersion: e.target.value })}
+                        >
+
+                            <MenuItem value={10}>Ten</MenuItem>
+                            <MenuItem value={20}>Twenty</MenuItem>
+                            <MenuItem value={30}>Thirty</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
+
+                {/* ################SHOW SWAGGER################# */}
+
+                <SwaggerUI url="./swagger/auth/swagger0_0_1.yaml" />
+
+
             </div>
         );
     }

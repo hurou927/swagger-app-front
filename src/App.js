@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SwaggerUI from './swagger-view';
+
 
 import ButtonAppBar from './serviceList';
 import fetch from 'node-fetch';
@@ -16,7 +16,8 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state={
-      serviceList: []
+      serviceList: [],
+      selectedService: 'auth'
     };
     fetch('./config.yaml')
       .then(res => res.text())
@@ -30,11 +31,11 @@ class App extends Component {
   render() {
     return (
       <div>
-        <ButtonAppBar 
+        <ButtonAppBar
           serviceList={this.state.serviceList.Services} 
           onSelected={ e=> { console.log(e); this.setState({service:e}) } }
         />
-        <SwaggerUI url="./swagger/auth/swagger0_0_1.yaml"/>
+      
       </div>
     );
   }
