@@ -30,6 +30,10 @@ const styles = theme => ({
         marginLeft: -12,
         marginRight: 20,
     },
+    formControl: {
+        margin: theme.spacing.unit,
+        minWidth: 120,
+    },
 });
 class ButtonAppBar extends Component {
 
@@ -38,7 +42,8 @@ class ButtonAppBar extends Component {
         this.state={
             isOpenSideBar: false,
             serviceList: [],
-            selectedService: undefined
+            selectedService: undefined,
+            selectedServiceInfo: undefined,
         };
         this.toggleSideBar = this.toggleSideBar.bind(this);
         this.TitleBar = this.TitleBar.bind(this);
@@ -69,13 +74,17 @@ class ButtonAppBar extends Component {
 
     onSelectService(service){
         // this.props.onSelected(service);
-        this.setState({ selectedService: service });
+        
         console.log('path:', `${service.dir}/config.yaml`);
         fetch(`${service.dir}/config.yaml`)
             .then(res => res.text())
             .then(body => {
                 const config = yaml.safeLoad(body);
-                console.log(service.name,config)
+                console.log(service.name, config);
+                this.setState({ 
+                    selectedService: service,
+                    selectedServiceInfo: config
+                });
         });
 
     }
@@ -115,7 +124,11 @@ class ButtonAppBar extends Component {
                 />
 
                 {/* select version */}
-                <SelectVersion />
+                <SelectVersion 
+                    releases={this.state.selectedService ? 
+                          this.state.selectedServiceInfo.Releases 
+                        : []}
+                />
 
 
                 {/* show swagger */}
