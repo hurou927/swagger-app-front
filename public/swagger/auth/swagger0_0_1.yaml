@@ -12,7 +12,7 @@ info:
   description: >-
     The Data Set API (DSAPI) allows the public users to discover and searc...
   version: 0.0.1
-  title: USPTO Data Set API
+  title: Auth API
   contact:
     name: Open Data Portal
     url: 'https://developer.uspto.gov'

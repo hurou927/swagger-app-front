@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 
-
-import ButtonAppBar from './serviceList';
+import SwaggerUI from './swagger-view';
+import Home from './homeComponent'
+import SelectServiceBarAndDrawer  from './selectServiceVersionComponent';
 // import fetch from 'node-fetch';
 import yaml from 'js-yaml';
 
@@ -17,6 +18,7 @@ class App extends Component {
     super(props);
     this.state={
       serviceList: [],
+      swaggerURL: undefined,
       // selectedService: 'auth'
     };
     fetch('./config.yaml')
@@ -31,11 +33,17 @@ class App extends Component {
   render() {
     return (
       <div>
-        <ButtonAppBar
+        <SelectServiceBarAndDrawer 
           serviceList={this.state.serviceList.Services} 
-          // onSelected={ e=> { console.log(e); this.setState({service:e}) } }
+          onSelectSwagger={ url => {console.log('App',url);this.setState({swaggerURL: url})} }
         />
       
+        {
+          this.state.swaggerURL ?
+            <SwaggerUI url={this.state.swaggerURL} />
+            : <Home />
+        }
+
       </div>
     );
   }

@@ -10,6 +10,14 @@ class SwaggerUI extends Component {
         super(props);
     }
 
+    componentWillReceiveProps(nextProps) {
+        SwaggerUi({
+            dom_id: '#swaggerContainer',
+            url: nextProps.url,
+            spec: nextProps.spec,
+            presets: [presets.apis]
+        });
+    }
 
     componentDidMount() {
         SwaggerUi({
@@ -19,6 +27,8 @@ class SwaggerUI extends Component {
             presets: [presets.apis]
         });
     }
+
+
 
     render() {
         return (
@@ -32,8 +42,8 @@ SwaggerUI.propTypes = {
     spec: PropTypes.object
 };
 
-SwaggerUI.defaultProps = {
-    url: `http://petstore.swagger.io/v2/swagger.json`
-};
+// SwaggerUI.defaultProps = {
+//     url: `http://petstore.swagger.io/v2/swagger.json`
+// };
 
 export default SwaggerUI;

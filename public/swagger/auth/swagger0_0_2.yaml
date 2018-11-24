@@ -20,7 +20,7 @@ info:
     without worry about the GET size limitations as well as encoding of the
     input parameters.
   version: 0.0.2
-  title: USPTO Data Set API
+  title: Auth API
   contact:
     name: Open Data Portal
     url: 'https://developer.uspto.gov'

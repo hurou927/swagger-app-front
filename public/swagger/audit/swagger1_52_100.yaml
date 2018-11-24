@@ -19,8 +19,8 @@ info:
     the POST call is that it allows users to specify any complex search criteria
     without worry about the GET size limitations as well as encoding of the
     input parameters.
-  version: 1.0.0
-  title: Auth API
+  version: 1.52.100
+  title: Audit API
   contact:
     name: Open Data Portal
     url: 'https://developer.uspto.gov'

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import  compareVersions from 'compare-versions';
+// import  compareVersions from 'compare-versions';
 
 
 import InputLabel from '@material-ui/core/InputLabel';
@@ -31,33 +31,40 @@ class SelectVersion extends Component{
         
         this.state = {
             releases: [],
+            age: '',
+            selectedServiceVersion: '',
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const sortedReleases = (nextProps.releases || []).sort((a, b) => compareVersions(b.Version, a.Version));
+        // console.log('nextProps',nextProps)
+        // const sortedReleases = (nextProps.releases || []).sort((a, b) => compareVersions(b.Version, a.Version));
         this.setState({
-            releases: sortedReleases,
-            selectedServiceVersion: sortedReleases[0]
+            releases: nextProps.releases,
+            // selectedServiceVersion: sortedReleases[0]
         })
     }
 
-
     render(){
         const { classes } = this.props;
-        if( !this.state.releases || this.state.releases.length == 0) {
+        if( !this.state.releases || this.state.releases.length === 0) {
             return ( 
                 <div style={{ margin: 24 }}>
-                    <a>NoVersion</a>
+                    NoVersion
                 </div> )
         }
         return (
+
             <div style={{ margin: 24 }}>
                 <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="select-version">Version</InputLabel>
+                    <InputLabel>Version</InputLabel>
                     <Select
                         value={this.state.selectedServiceVersion}
-                        onChange={e => this.setState({ selectedServiceVersion: e.target.value })}
+                        onChange={e => {
+                                this.props.onSelect(JSON.parse(e.target.value));
+                                this.setState({ selectedServiceVersion: e.target.value });
+                            }
+                        }
                     >
                         {
                             this.state.releases.map(
@@ -69,8 +76,9 @@ class SelectVersion extends Component{
                                     } else if (['prod', 'production'].includes(tagLowerCase)){
                                         color = 'secondary';
                                     }
+                                    
                                     return (
-                                        <MenuItem value={releaseInfo} key={index}>
+                                        <MenuItem value={JSON.stringify(releaseInfo)} key={index} >
                                             {`${releaseInfo.Version}`}
                                             <Chip 
                                                 className={classes.chip} 
@@ -90,7 +98,8 @@ class SelectVersion extends Component{
 }
 
 SelectVersion.propTypes = {
-    // versions: PropTypes.array,
+    versions: PropTypes.array,
+    onSelect: PropTypes.func
 };
 
 
