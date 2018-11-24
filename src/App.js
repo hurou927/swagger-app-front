@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 
 import ButtonAppBar from './serviceList';
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 import yaml from 'js-yaml';
 
 // import config from './config.yaml';
@@ -17,7 +17,7 @@ class App extends Component {
     super(props);
     this.state={
       serviceList: [],
-      selectedService: 'auth'
+      // selectedService: 'auth'
     };
     fetch('./config.yaml')
       .then(res => res.text())
@@ -33,7 +33,7 @@ class App extends Component {
       <div>
         <ButtonAppBar
           serviceList={this.state.serviceList.Services} 
-          onSelected={ e=> { console.log(e); this.setState({service:e}) } }
+          // onSelected={ e=> { console.log(e); this.setState({service:e}) } }
         />
       
       </div>

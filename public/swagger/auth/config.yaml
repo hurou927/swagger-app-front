@@ -1,11 +1,11 @@
 Service : auth
 
 
-ReleaseList:
+Releases:
   -
     Version: 1.0.0
     Path: ./swagger1_0_0.yaml
-    tag: IR
+    tag: InternalRelease
   -
     Version: 0.0.1
     Path: ./swagger0_0_1.yaml
