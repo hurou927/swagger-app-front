@@ -3,36 +3,82 @@ import PropTypes from 'prop-types';
 
 import SwaggerUi, {presets} from 'swagger-ui';
 import 'swagger-ui/dist/swagger-ui.css';
+import SelectVersion from './selectVersionComponent'
 
 class SwaggerUI extends Component {
 
     constructor(props) {
         super(props);
+
+        this.state={
+            selectedService: props.selectedService,
+            selectedServiceInfo: props.selectedServiceInfo,
+            selectedServiceVersionInfo: undefined,
+        }
+
+
+        this.displaySwagger = this.displaySwagger.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
-        SwaggerUi({
-            dom_id: '#swaggerContainer',
-            url: nextProps.url,
-            spec: nextProps.spec,
-            presets: [presets.apis]
-        });
+
+        this.setState({
+            selectedService: nextProps.selectedService,
+            selectedServiceInfo: nextProps.selectedServiceInfo
+        })
     }
 
     componentDidMount() {
+        
+    }
+
+    componentDidUpdate() {
+        this.displaySwagger();
+    }
+
+
+    displaySwagger(){
+        let swaggerURL = '';
+        if (this.state.selectedService) {
+            if (this.state.selectedServiceVersionInfo) {
+                swaggerURL = `${this.state.selectedService.dir}/${this.state.selectedServiceVersionInfo.Path}`;
+            } else {
+                swaggerURL = `${this.state.selectedService.dir}/${this.state.selectedServiceInfo.Releases[0].Path}`;
+            }
+        }
+        console.log('SwaggerUI', this.state,swaggerURL);
         SwaggerUi({
             dom_id: '#swaggerContainer',
-            url: this.props.url,
+            url: swaggerURL,
             spec: this.props.spec,
             presets: [presets.apis]
         });
     }
 
 
-
     render() {
+
+        console.log('SwaggerUI:', this.state, this.props);
+        console.log('SwaggerUI', this.state.selectedServiceInfo)
+        
         return (
-            <div id="swaggerContainer" />
+            <div>
+                <SelectVersion
+                    onSelect={
+                        (releaseInfo) => {
+                            console.log('select!!!');
+                            this.setState({
+                                selectedServiceVersionInfo: releaseInfo,
+                            })
+                            // this.props.onSelectSwagger(`${this.state.selectedService.dir}/${releaseInfo.Path}`)
+                        }
+                    }
+                    releases={
+                        this.state.selectedServiceInfo ?
+                        this.state.selectedServiceInfo.Releases : []}
+                />
+                <div id="swaggerContainer" />
+            </div>
         );
     }
 }

@@ -10,11 +10,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import compareVersions from 'compare-versions';
+// import compareVersions from 'compare-versions';
 
 
 import DrawerWithServices from './drawerWithServicesComponent';
-import SelectVersion from './selectVersionComponent'
+// import SelectVersion from './selectVersionComponent'
 
 
 const styles = theme => ({
@@ -40,27 +40,17 @@ class SelectServiceBarAndDrawer extends Component {
         this.state={
             isOpenSideBar: false,
             serviceList: [], 
-            selectedService: undefined, //  service information in config.yaml
-            selectedServiceVersionInfo: undefined, // service information in swagger/{service}/config.yaml
-            isShowSelect: props.isShowSelect || true,
         };
         this.toggleSideBar = this.toggleSideBar.bind(this);
-        this.TitleBar = this.TitleBar.bind(this);
-        this.onSelectService = this.onSelectService.bind(this);
+        // this.TitleBar = this.TitleBar.bind(this);
+
     }
 
     componentWillReceiveProps(nextProps){
-        // console.log('selectedService', nextProps);
         this.sortedServiceList = nextProps.serviceList.sort( (a,b) => a.name > b.name );
-
         this.setState({ 
             serviceList: this.sortedServiceList, 
-            isShowSelect: nextProps.isShowSelect
         });
-
-        if(nextProps.service != this.props.service ){
-            this.onSelectService( nextProps.service );
-        } 
         
     }
 
@@ -69,38 +59,6 @@ class SelectServiceBarAndDrawer extends Component {
     }
 
 
-    TitleBar(classes){
-
-        if (!this.state.selectedService) {
-            return ( <div>HUwagger</div> )
-        } else{
-            return ( <div>{`HUwagger / ${this.state.selectedService.name}`}</div> );
-        }
-    }
-
-
-    onSelectService(service){
-
-        fetch(`${service.dir}/config.yaml`)
-            .then(res => res.text())
-            .then(body => {
-                const config = yaml.safeLoad(body);
-                config.Releases = (config.Releases || []).sort((a, b) => compareVersions(b.Version, a.Version));
-                console.log(service.name, config);
-                this.setState({ 
-                    selectedService: service,
-                    selectedServiceInfo: config,
-                    isOpenSideBar: false
-                    // swaggerURL: `${service.dir}/${config.Releases[0].Path}`,
-                });
-                this.props.onSelectSwagger(`${service.dir}/${config.Releases[0].Path}`);
-            }).catch(error=>{
-                console.error(error);
-            })
-    };
-
-
-    
 
     render(){
         const { classes } = this.props;
@@ -123,7 +81,7 @@ class SelectServiceBarAndDrawer extends Component {
                         >
                         <MenuIcon />
                         </IconButton>
-
+                        
                         <img
                             src="./huwager_icon.svg"
                             width="32" height="32"
@@ -132,7 +90,8 @@ class SelectServiceBarAndDrawer extends Component {
                             onClick={e=>{this.props.onClickHome()}}
                         />
                         <Typography variant="h6" color="inherit" className={classes.grow}>
-                            {this.TitleBar(classes)}
+                            {/* {this.TitleBar(classes)} */}
+                            HUwagger
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -144,35 +103,13 @@ class SelectServiceBarAndDrawer extends Component {
                     serviceList={this.sortedServiceList} 
                     onSelect={
                         (service) => { 
-                            console.log('select service');
-                            this.onSelectService(service);
+                            
+                            console.log('select service', this.props);
+                            this.props.onSelectService(service);
+                            
                     }} 
                     open={this.state.isOpenSideBar}
                 />
-
-                {/* select version */}
-
-                
-
-                <SelectVersion
-                    onSelect={
-                        (releaseInfo) => {
-                            console.log('select!!!');
-                            this.setState({ 
-                                selectedServiceVersionInfo: releaseInfo,
-                                // swaggerURL: `${this.state.selectedService.dir}/${releaseInfo.Path}`
-                            })
-                            this.props.onSelectSwagger(`${this.state.selectedService.dir}/${releaseInfo.Path}`)
-                        }
-
-                        
-                    }
-                    releases={ this.state.selectedService && !this.state.isShowSelect  ? 
-                          this.state.selectedServiceInfo.Releases 
-                        : []}
-                />
-
-
 
             </div>
         );
