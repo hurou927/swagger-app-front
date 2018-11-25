@@ -78,7 +78,10 @@ class SelectVersion extends Component{
                                     }
                                     
                                     return (
-                                        <MenuItem value={JSON.stringify(releaseInfo)} key={index} >
+                                        <MenuItem 
+                                            value={JSON.stringify(releaseInfo)} 
+                                            key={index} 
+                                        >
                                             {`${releaseInfo.Version}`}
                                             <Chip 
                                                 className={classes.chip} 

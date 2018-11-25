@@ -35,7 +35,6 @@ class App extends Component {
         this.setState({serviceList: config})
       });
 
-
   }
 
   onSelectService(service) {
