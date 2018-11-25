@@ -10,7 +10,7 @@ class Home extends Component {
 
     render(){
         return (
-            <div>
+            <div style={{margin: '50px'}}>
             xxxxxxxxxxxxxxxxxx
             </div>
         )

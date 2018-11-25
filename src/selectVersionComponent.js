@@ -50,7 +50,7 @@ class SelectVersion extends Component{
         if( !this.state.releases || this.state.releases.length === 0) {
             return ( 
                 <div style={{ margin: 24 }}>
-                    NoVersion
+                    {/* NoVersion */}
                 </div> )
         }
         return (

@@ -19,6 +19,7 @@ class App extends Component {
     this.state={
       serviceList: [],
       swaggerURL: undefined,
+      isOpenHome: true,
       // selectedService: 'auth'
     };
     fetch('./config.yaml')
@@ -34,14 +35,18 @@ class App extends Component {
     return (
       <div>
         <SelectServiceBarAndDrawer 
+          isShowSelect={this.state.isOpenHome}
           serviceList={this.state.serviceList.Services} 
-          onSelectSwagger={ url => {console.log('App',url);this.setState({swaggerURL: url})} }
+          onSelectSwagger={ url => {this.setState({swaggerURL: url, isOpenHome: false})} }
+          onClickHome={() => { this.setState({ isOpenHome: true }) }} 
         />
       
         {
-          this.state.swaggerURL ?
-            <SwaggerUI url={this.state.swaggerURL} />
-            : <Home />
+          this.state.isOpenHome ?
+            <Home />
+            : <SwaggerUI 
+                url={this.state.swaggerURL}  
+              />
         }
 
       </div>

@@ -39,22 +39,29 @@ class SelectServiceBarAndDrawer extends Component {
         super(props);
         this.state={
             isOpenSideBar: false,
-            serviceList: [],
-            selectedService: undefined,
-            selectedServiceInfo: undefined,
-            selectedServiceVersionInfo: undefined,
-            // swaggerURL: "./swagger/auth/swagger0_0_1.yaml",
+            serviceList: [], 
+            selectedService: undefined, //  service information in config.yaml
+            selectedServiceVersionInfo: undefined, // service information in swagger/{service}/config.yaml
+            isShowSelect: props.isShowSelect || true,
         };
         this.toggleSideBar = this.toggleSideBar.bind(this);
         this.TitleBar = this.TitleBar.bind(this);
         this.onSelectService = this.onSelectService.bind(this);
-        // this.sortedServiceList = [];
     }
 
     componentWillReceiveProps(nextProps){
-        // console.log(nextProps.serviceList);
+        // console.log('selectedService', nextProps);
         this.sortedServiceList = nextProps.serviceList.sort( (a,b) => a.name > b.name );
-        this.setState({ serviceList: this.sortedServiceList});
+
+        this.setState({ 
+            serviceList: this.sortedServiceList, 
+            isShowSelect: nextProps.isShowSelect
+        });
+
+        if(nextProps.service != this.props.service ){
+            this.onSelectService( nextProps.service );
+        } 
+        
     }
 
     toggleSideBar(nextStatus) {
@@ -65,7 +72,7 @@ class SelectServiceBarAndDrawer extends Component {
     TitleBar(classes){
 
         if (!this.state.selectedService) {
-            return (<div>HUwagger</div>)
+            return ( <div>HUwagger</div> )
         } else{
             return ( <div>{`HUwagger / ${this.state.selectedService.name}`}</div> );
         }
@@ -73,9 +80,7 @@ class SelectServiceBarAndDrawer extends Component {
 
 
     onSelectService(service){
-        // this.props.onSelected(service);
-        
-        // console.log('path:', `${service.dir}/config.yaml`);
+
         fetch(`${service.dir}/config.yaml`)
             .then(res => res.text())
             .then(body => {
@@ -100,7 +105,7 @@ class SelectServiceBarAndDrawer extends Component {
     render(){
         const { classes } = this.props;
 
-        console.log(this.state);
+        console.log(this.props,this.state);
 
         return (
             <div className={classes.root}>
@@ -118,11 +123,13 @@ class SelectServiceBarAndDrawer extends Component {
                         >
                         <MenuIcon />
                         </IconButton>
+
                         <img
                             src="./huwager_icon.svg"
                             width="32" height="32"
                             alt=""
                             style={{padding: "0 10px 0 0"}}
+                            onClick={e=>{this.props.onClickHome()}}
                         />
                         <Typography variant="h6" color="inherit" className={classes.grow}>
                             {this.TitleBar(classes)}
@@ -144,6 +151,9 @@ class SelectServiceBarAndDrawer extends Component {
                 />
 
                 {/* select version */}
+
+                
+
                 <SelectVersion
                     onSelect={
                         (releaseInfo) => {
@@ -157,7 +167,7 @@ class SelectServiceBarAndDrawer extends Component {
 
                         
                     }
-                    releases={this.state.selectedService ? 
+                    releases={ this.state.selectedService && !this.state.isShowSelect  ? 
                           this.state.selectedServiceInfo.Releases 
                         : []}
                 />
@@ -169,8 +179,8 @@ class SelectServiceBarAndDrawer extends Component {
     }
 }
 
-SelectServiceBarAndDrawer.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
+// SelectServiceBarAndDrawer.propTypes = {
+//     classes: PropTypes.object.isRequired,
+// };
 
 export default withStyles(styles)(SelectServiceBarAndDrawer);
