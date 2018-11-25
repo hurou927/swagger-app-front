@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import compareVersions from 'compare-versions';
 
-import SwaggerUI from './swagger-view';
-import Home from './homeComponent'
-import SelectServiceBarAndDrawer  from './selectServiceVersionComponent';
-// import fetch from 'node-fetch';
+import SwaggerUI from './swaggerComponent';
+import SelectServiceBarAndDrawer  from './selectServiceBarAndDrawerComponent';
+import Home from './homeComponent';
+
 import yaml from 'js-yaml';
 
-// import config from './config.yaml';
 
-// /home/hurou/react/swagger-project/node_modules/react-scripts/config/webpackDevServer.config.js
-// disableDotRule: true -> false
+//
+// 開始直後renderが2回走る （2回目はconfig.yamlを読んだあと）
+// 
 
 
 class App extends Component {
@@ -32,7 +32,6 @@ class App extends Component {
       .then(res => res.text())
       .then(body => {
         const config = yaml.safeLoad(body);
-        console.log(config)
         this.setState({serviceList: config})
       });
 
@@ -49,8 +48,9 @@ class App extends Component {
         this.setState({ 
           selectedService: service,
           selectedServiceInfo: config,
+          isOpenHome: false,
+          isOpenSideBar : false
         });
-        console.log('AppOnSelect',service.name, config);
       }).catch(error => {
         console.error('AppOnSelect',error);
       })
@@ -58,35 +58,36 @@ class App extends Component {
 
 
   render() {
-    console.log('App', this.state.selectedService)
+    console.log('App Render', this.props, this.state)
     return (
       <div>
 
         
         <SelectServiceBarAndDrawer 
-          isShowSelect={this.state.isOpenHome}
           serviceList={this.state.serviceList.Services}
           onSelectService={service=>{
+            // this.setState({ isOpenHome: false });
             this.onSelectService(service);
           }}
+          isOpenSideBar={this.state.isOpenSideBar}
           onSelectSwagger={ url => {this.setState({swaggerURL: url, isOpenHome: false})} }
-          onClickHome={() => { }} 
+          onClickHome={() => {
+            this.setState({
+              isOpenSideBar: false,
+              isOpenHome: true})   
+          }} 
         />
-{/*       
+       
         {
           this.state.isOpenHome ?
-            <Home />
+              <Home />
             : <SwaggerUI
-                selectedServiceInfo={this.state.selectedService}
-                url={this.state.swaggerURL}  
+                selectedService={this.state.selectedService}
+                selectedServiceInfo={this.state.selectedServiceInfo}
+                url={this.state.swaggerURL}
+                
               />
-        } */}
-
-        <SwaggerUI
-          selectedService={this.state.selectedService}
-          selectedServiceInfo={this.state.selectedServiceInfo}
-          url={this.state.swaggerURL}
-        />
+        } 
 
       </div>
     );

@@ -30,8 +30,7 @@ class SelectVersion extends Component{
         super(props);
         
         this.state = {
-            releases: [],
-            age: '',
+            releases: props.releases,
             selectedServiceVersion: '',
         }
     }
@@ -47,6 +46,7 @@ class SelectVersion extends Component{
 
     render(){
         const { classes } = this.props;
+        console.log('select render',this.props, this.state);
         if( !this.state.releases || this.state.releases.length === 0) {
             return ( 
                 <div style={{ margin: 24 }}>

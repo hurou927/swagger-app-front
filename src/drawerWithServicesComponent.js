@@ -24,7 +24,6 @@ class DrawerWithServices extends Component {
 
     constructor(props){
         super(props);
-        console.log('props',props);
         this.state = {
             // serviceList: [],this.props.serviceList,
             serviceList: [],
@@ -83,8 +82,11 @@ class DrawerWithServices extends Component {
         );
 
         return (
+            
             <div>
-                < Drawer open={this.state.isOpenSideBar} onClose={e => this.toggleSideBar(false)} >
+                < Drawer 
+                    open={this.state.isOpenSideBar} 
+                    onClose={e => this.toggleSideBar(false)} >
                     <div
                         tabIndex={0}
                         role="button"
