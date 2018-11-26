@@ -11,7 +11,7 @@ class SwaggerUI extends Component {
         super(props);
 
         this.state={
-            selectedService: props.selectedService,
+            // selectedService: props.selectedService,
             selectedServiceInfo: props.selectedServiceInfo,
             selectedServiceVersionInfo: undefined,
         }
@@ -22,10 +22,13 @@ class SwaggerUI extends Component {
 
     componentWillReceiveProps(nextProps) {
 
-        this.setState({
-            selectedService: nextProps.selectedService,
-            selectedServiceInfo: nextProps.selectedServiceInfo
-        })
+        if (this.props.selectedServiceInfo.base.name != nextProps.selectedServiceInfo.base.name){
+            this.setState({
+                // selectedService: nextProps.selectedService,
+                selectedServiceInfo: nextProps.selectedServiceInfo,
+                selectedServiceVersionInfo: undefined,
+            })
+        }
     }
 
     componentDidMount() {
@@ -39,14 +42,16 @@ class SwaggerUI extends Component {
 
     displaySwagger(){
         let swaggerURL = '';
-        if (this.state.selectedService) {
+        
+        if (this.state.selectedServiceInfo) {
+            const dirname = this.state.selectedServiceInfo.base.dir;
             if (this.state.selectedServiceVersionInfo) {
-                swaggerURL = `${this.state.selectedService.dir}/${this.state.selectedServiceVersionInfo.Path}`;
+                swaggerURL = `${dirname }/${this.state.selectedServiceVersionInfo.Path}`;
             } else {
-                swaggerURL = `${this.state.selectedService.dir}/${this.state.selectedServiceInfo.Releases[0].Path}`;
+                swaggerURL = `${dirname }/${this.state.selectedServiceInfo.detail.Releases[0].Path}`;
             }
         }
-        // console.log('SwaggerUI', this.state,swaggerURL);
+        console.log('displaySwagger', this.state, swaggerURL);
         SwaggerUi({
             dom_id: '#swaggerContainer',
             url: swaggerURL,
@@ -59,8 +64,6 @@ class SwaggerUI extends Component {
     render() {
 
         console.log('SwaggerUI render', this.state, this.props);
-        console.log(this.state.selectedServiceInfo ?
-            this.state.selectedServiceInfo.Releases : []);
         return (
             <div>
                 <SelectVersion
@@ -75,7 +78,7 @@ class SwaggerUI extends Component {
                     }
                     releases={
                         this.state.selectedServiceInfo ?
-                        this.state.selectedServiceInfo.Releases : []}
+                        this.state.selectedServiceInfo.detail.Releases : []}
                 />
                 <div id="swaggerContainer" />
             </div>

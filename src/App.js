@@ -19,9 +19,7 @@ class App extends Component {
     super(props);
     this.state={
       serviceList: [],
-      swaggerURL: undefined,
       isOpenHome: true,
-      selectedService: undefined,
       selectedServiceInfo: undefined,
       // selectedService: 'auth'
     };
@@ -44,9 +42,12 @@ class App extends Component {
       .then(body => {
         const config = yaml.safeLoad(body);
         config.Releases = (config.Releases || []).sort((a, b) => compareVersions(b.Version, a.Version));
+        console.log('select!!!', `${service.dir}/config.yaml`, config, service);
         this.setState({ 
-          selectedService: service,
-          selectedServiceInfo: config,
+          selectedServiceInfo : {
+            base: service,
+            detail: config
+          },
           isOpenHome: false,
           isOpenSideBar : false
         });
@@ -65,11 +66,9 @@ class App extends Component {
         <SelectServiceBarAndDrawer 
           serviceList={this.state.serviceList.Services}
           onSelectService={service=>{
-            // this.setState({ isOpenHome: false });
             this.onSelectService(service);
           }}
           isOpenSideBar={this.state.isOpenSideBar}
-          onSelectSwagger={ url => {this.setState({swaggerURL: url, isOpenHome: false})} }
           onClickHome={() => {
             this.setState({
               isOpenSideBar: false,
@@ -81,10 +80,7 @@ class App extends Component {
           this.state.isOpenHome ?
               <Home />
             : <SwaggerUI
-                selectedService={this.state.selectedService}
                 selectedServiceInfo={this.state.selectedServiceInfo}
-                url={this.state.swaggerURL}
-                
               />
         } 
 
