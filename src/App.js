@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import compareVersions from 'compare-versions';
+// import { Route, Switch, BrowserRouter} from 'react-router-dom';
 
 import SwaggerUI from './swaggerComponent';
 import SelectServiceBarAndDrawer  from './selectServiceBarAndDrawerComponent';
@@ -84,9 +85,23 @@ class App extends Component {
               />
         } 
 
+        {/* <BrowserRouter>
+          <div>
+            <Route exact path='/' component={()=>(<Home/>)} />
+            <Route exact path='/Swagger' component={
+              () => (< SwaggerUI
+                  selectedServiceInfo={this.state.selectedServiceInfo}
+                />
+              )} 
+            />
+          </div>
+        </BrowserRouter> */}
+
       </div>
     );
   }
 }
+
+
 
 export default App;

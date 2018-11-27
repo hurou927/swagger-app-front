@@ -4,6 +4,30 @@ import PropTypes from 'prop-types';
 import SwaggerUi, {presets} from 'swagger-ui';
 import 'swagger-ui/dist/swagger-ui.css';
 import SelectVersion from './selectVersionComponent'
+import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+
+import UpdateTag from './updateTagComponent';
+
+const styles = theme => ({
+    paper: {
+        position: 'absolute',
+        width: theme.spacing.unit * 80,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
+        
+    },
+    paper2: {
+        padding: theme.spacing.unit * 2,
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+});
+
+
+
 
 class SwaggerUI extends Component {
 
@@ -18,6 +42,7 @@ class SwaggerUI extends Component {
 
 
         this.displaySwagger = this.displaySwagger.bind(this);
+        this.lastDisplaySwaggerULR = undefined;
     }
 
     componentWillReceiveProps(nextProps) {
@@ -51,6 +76,10 @@ class SwaggerUI extends Component {
                 swaggerURL = `${dirname }/${this.state.selectedServiceInfo.detail.Releases[0].Path}`;
             }
         }
+        if(this.lastDisplaySwaggerULR == swaggerURL) {
+            return;
+        }
+        this.lastDisplaySwaggerULR = swaggerURL;
         console.log('displaySwagger', this.state, swaggerURL);
         SwaggerUi({
             dom_id: '#swaggerContainer',
@@ -62,10 +91,15 @@ class SwaggerUI extends Component {
 
 
     render() {
-
+        const { classes } = this.props;
         console.log('SwaggerUI render', this.state, this.props);
         return (
             <div>
+                
+                
+                <UpdateTag serviceInfoDetail={this.state.selectedServiceInfo.detail}/>
+
+
                 <SelectVersion
                     onSelect={
                         (releaseInfo) => {
@@ -95,4 +129,4 @@ SwaggerUI.propTypes = {
 //     url: `http://petstore.swagger.io/v2/swagger.json`
 // };
 
-export default SwaggerUI;
+export default withStyles(styles)(SwaggerUI);
